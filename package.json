@@ -1,0 +1,9 @@
+{
+  "name": "ai-cli-kit",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "bin": {
+    "ai-cli-kit": "./bin/ai-cli-kit.mjs"
+  }
+}

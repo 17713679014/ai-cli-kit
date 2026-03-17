@@ -1,0 +1,4 @@
+#!/bin/zsh
+set -euo pipefail
+
+exec '/Users/xuejintao/Desktop/前端测试/ai-search-chat/scripts/start-litellm.sh'
