@@ -489,6 +489,10 @@ packages/ai-cli-kit/
 - 一键生成 `llm` / `codex_new` / `Claude_new`
 - 一键生成 `~/litellm_config.yaml`、`~/.claude/settings.json` 和白名单 MCP 配置
 
+当前仓库地址：
+
+- GitHub：`https://github.com/17713679014/ai-cli-kit`
+
 换句话说，真正想做的不是“这台电脑终于配好了”，而是：
 
 > **把一次人工调试，沉淀成一套可复制、可迁移、可恢复的工具化方案。**
