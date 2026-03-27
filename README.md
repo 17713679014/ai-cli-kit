@@ -20,11 +20,28 @@ node bin/ai-cli-kit.mjs bootstrap
 - 生成 `llm` / `codex_new` / `Claude_new`
 - 检查依赖
 - 检查 `localhost` 解析是否异常
+- 检查 LiteLLM 的 `uvloop` / Python 3.14 兼容性
 - 尝试安装缺失依赖：
   - `pipx`
   - `litellm`
   - `claude`
   - `codex`
+- 自动修复 LiteLLM 的 `uvloop` 问题
+
+## LiteLLM 兼容修复
+
+当前工具会自动处理这个已知问题：
+
+- Python 3.14
+- `uvloop` 与 `uvicorn` 不兼容
+- LiteLLM 启动时报：
+  - `ImportError: cannot import name 'BaseDefaultEventLoopPolicy'`
+
+如果你想单独修复，也可以执行：
+
+```bash
+node bin/ai-cli-kit.mjs fix-litellm
+```
 
 ## 启动兼容修复
 
@@ -33,8 +50,6 @@ node bin/ai-cli-kit.mjs bootstrap
 ```bash
 litellm --host 127.0.0.1 --config ~/litellm_config.yaml --port 4000
 ```
-
-原因是某些 macOS / Python 3.14 环境下，LiteLLM 在使用 `localhost` 进行端口探测时会触发 `socket.gaierror`。
 
 如果 `doctor` 检查到 `localhost` 解析异常，会提示你：
 
@@ -51,7 +66,7 @@ AZURE_OPENAI_KEY='your-key' \
 node bin/ai-cli-kit.mjs init
 ```
 
-### 依赖与本机解析自检
+### 依赖与环境自检
 
 ```bash
 node bin/ai-cli-kit.mjs doctor
