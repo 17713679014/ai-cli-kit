@@ -33,6 +33,14 @@ function commandExists(name) {
   return result.status === 0 && result.stdout.trim().length > 0
 }
 
+function checkLocalhostResolution() {
+  const result = runShell("python3 - <<'PY'\nimport socket\ntry:\n    socket.getaddrinfo('localhost', 4000)\n    print('ok')\nexcept Exception as e:\n    print(f'error:{e}')\n    raise\nPY")
+  return {
+    ok: result.status === 0,
+    output: `${result.stdout || ''}${result.stderr || ''}`.trim()
+  }
+}
+
 function detectDeps() {
   return {
     node: commandExists('node'),
@@ -48,6 +56,18 @@ function printDepsStatus(deps) {
   console.log('dependency status:')
   for (const [name, ok] of Object.entries(deps)) {
     console.log(`- ${name}: ${ok ? 'ok' : 'missing'}`)
+  }
+}
+
+function printLocalhostStatus() {
+  const localhost = checkLocalhostResolution()
+  console.log(`- localhost resolution: ${localhost.ok ? 'ok' : 'broken'}`)
+  if (!localhost.ok) {
+    console.log('  hint: fix /etc/hosts so localhost resolves, e.g. 127.0.0.1 localhost and ::1 localhost')
+    console.log('  fallback: generated LiteLLM launcher already forces --host 127.0.0.1')
+    if (localhost.output) {
+      console.log(`  detail: ${localhost.output}`)
+    }
   }
 }
 
@@ -78,7 +98,7 @@ function renderMcpConfig() {
 }
 
 function renderStartLiteLLM() {
-  return `#!/bin/zsh\nset -euo pipefail\n\nexport LITELLM_API_KEY="\${LITELLM_API_KEY:-sk-proxy}"\nexec ~/.local/bin/litellm --config ~/litellm_config.yaml --port 4000\n`
+  return `#!/bin/zsh\nset -euo pipefail\n\nexport LITELLM_API_KEY="\${LITELLM_API_KEY:-sk-proxy}"\necho \"🚀 启动 LiteLLM Proxy on http://127.0.0.1:4000 ...\"\nexec ~/.local/bin/litellm --host 127.0.0.1 --config ~/litellm_config.yaml --port 4000\n`
 }
 
 function renderInstallDepsScript() {
@@ -126,6 +146,7 @@ function doInit() {
 
   const deps = detectDeps()
   printDepsStatus(deps)
+  printLocalhostStatus()
 
   writeFile(path.join(homeDir, 'litellm_config.yaml'), renderLiteLLMConfig({ azureBase, azureKey, geminiKey }))
   writeFile(path.join(homeDir, '.claude', 'settings.json'), renderClaudeSettings())
@@ -157,11 +178,13 @@ function doBootstrap() {
 
   console.log('\nfinal status:')
   printDepsStatus(detectDeps())
+  printLocalhostStatus()
   console.log('\nready: run llm, then Claude_new or codex_new')
 }
 
 if (command === 'doctor') {
   printDepsStatus(detectDeps())
+  printLocalhostStatus()
   process.exit(0)
 }
 
