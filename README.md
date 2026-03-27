@@ -2,27 +2,32 @@
 
 一套用于统一 **LiteLLM + Codex CLI + Claude Code + Azure GPT-5.4** 的可迁移工具包。
 
-## 目标
+## 最推荐的方式
 
-换电脑后，你只需要准备自己的 Key：
+换电脑后，直接执行：
 
-- `AZURE_OPENAI_BASE`
-- `AZURE_OPENAI_KEY`
-- 可选 `GEMINI_API_KEY`
+```bash
+AZURE_OPENAI_BASE='https://your-resource.openai.azure.com/openai/v1' \
+AZURE_OPENAI_KEY='your-key' \
+node bin/ai-cli-kit.mjs bootstrap
+```
 
-然后执行初始化，即可恢复：
+这条命令会自动：
 
-- `~/litellm_config.yaml`
-- `~/.claude/settings.json`
-- `.claude/mcp-gpt54.json`
-- `scripts/install-deps.sh`
-- `llm`
-- `codex_new`
-- `Claude_new`
+- 写入 `~/litellm_config.yaml`
+- 写入 `~/.claude/settings.json`
+- 生成 `.claude/mcp-gpt54.json`
+- 生成 `llm` / `codex_new` / `Claude_new`
+- 检查依赖
+- 尝试安装缺失依赖：
+  - `pipx`
+  - `litellm`
+  - `claude`
+  - `codex`
 
-## 一键恢复流程
+## 其他命令
 
-### 1. 初始化配置
+### 只初始化配置
 
 ```bash
 AZURE_OPENAI_BASE='https://your-resource.openai.azure.com/openai/v1' \
@@ -30,22 +35,13 @@ AZURE_OPENAI_KEY='your-key' \
 node bin/ai-cli-kit.mjs init
 ```
 
-### 2. 安装依赖
-
-如果 `init` 输出里有 missing：
+### 依赖自检
 
 ```bash
-./scripts/install-deps.sh
+node bin/ai-cli-kit.mjs doctor
 ```
 
-这个脚本会检查并安装：
-
-- `pipx`
-- `litellm`
-- `claude`
-- `codex`
-
-### 3. 启动
+## 启动
 
 ```bash
 llm
@@ -57,12 +53,6 @@ Claude_new
 ```bash
 llm
 codex_new
-```
-
-## 依赖自检
-
-```bash
-node bin/ai-cli-kit.mjs doctor
 ```
 
 ## 博客复盘
