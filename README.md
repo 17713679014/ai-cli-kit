@@ -10,14 +10,19 @@
 - `AZURE_OPENAI_KEY`
 - 可选 `GEMINI_API_KEY`
 
-然后运行初始化，即可恢复：
+然后执行初始化，即可恢复：
 
 - `~/litellm_config.yaml`
 - `~/.claude/settings.json`
 - `.claude/mcp-gpt54.json`
-- 启动脚本与极简命令
+- `scripts/install-deps.sh`
+- `llm`
+- `codex_new`
+- `Claude_new`
 
-## 初始化
+## 一键恢复流程
+
+### 1. 初始化配置
 
 ```bash
 AZURE_OPENAI_BASE='https://your-resource.openai.azure.com/openai/v1' \
@@ -25,12 +30,40 @@ AZURE_OPENAI_KEY='your-key' \
 node bin/ai-cli-kit.mjs init
 ```
 
-## 生成内容
+### 2. 安装依赖
 
-- LiteLLM 配置
-- Claude Code 配置
-- GPT-5.4 工具白名单 MCP 配置
-- 启动脚本模板
+如果 `init` 输出里有 missing：
+
+```bash
+./scripts/install-deps.sh
+```
+
+这个脚本会检查并安装：
+
+- `pipx`
+- `litellm`
+- `claude`
+- `codex`
+
+### 3. 启动
+
+```bash
+llm
+Claude_new
+```
+
+或：
+
+```bash
+llm
+codex_new
+```
+
+## 依赖自检
+
+```bash
+node bin/ai-cli-kit.mjs doctor
+```
 
 ## 博客复盘
 
